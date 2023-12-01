@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
+const { validateRegisterUser, validateLogin } = require('../validations/authValidation');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -12,15 +13,27 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
+  const { error } = validateRegisterUser(req.body);
+  if(error){
+    return res.status(400).send({ success: false, message: error.details[0].message });
+  }
   const { email, password } = req.body;
+  const isExist = await User.findOne({ email });
+  if(isExist){
+    return res.status(400).send({ success: false, message: "Email already registered" });
+  }
   const hashedPassword = await bcrypt.hash(password, 12);
   const user = new User({ email, password: hashedPassword });
   await user.save();
   res.status(201).json({ message: 'User registered successfully', userId: user.id });
 };
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
+  const { error } = validateLogin(req.body);
+  if(error){
+    return res.status(400).send({ success: false, error: error.details[0].message });
+  }
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user || !await bcrypt.compare(password, user.password)) {
@@ -30,7 +43,7 @@ exports.login = async (req, res) => {
   res.json({ token, userId: user.id });
 };
 
-exports.forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
@@ -59,7 +72,7 @@ exports.forgotPassword = async (req, res) => {
     res.send('Password reset email sent.');
   };
   
-  exports.resetPassword = async (req, res) => {
+  const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
     
     try {
@@ -98,7 +111,7 @@ exports.forgotPassword = async (req, res) => {
   };
   
 
-  exports.refreshToken = async (req, res) => {
+  const refreshToken = async (req, res) => {
     const { refreshToken } = req.body;
   
     if (!refreshToken) {
@@ -132,3 +145,11 @@ exports.forgotPassword = async (req, res) => {
     }
   };
   
+
+module.exports = {
+  login,
+  register,
+  forgotPassword,
+  resetPassword,
+  refreshToken,
+}

@@ -14,7 +14,11 @@ const isAuthenticated = (req, res, next) => {
     req.user = decoded; // { userId: ID }
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    if (err instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: 'Token is expired' });
+    } else {
+      return res.status(401).json({ message: 'Token is not valid' });
+    }
   }
 };
 
