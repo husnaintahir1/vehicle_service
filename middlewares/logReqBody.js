@@ -4,4 +4,4 @@ const logReqBody = (req, res, next) => {
   next()
 }
 
-module.exports = { logReqBody }
+module.exports = logReqBody;

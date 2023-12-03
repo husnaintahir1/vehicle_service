@@ -1,10 +1,12 @@
 const express = require('express');
-const { register, login, forgotPassword, resetPassword, refreshToken, } = require('../controllers/authController');
+const { register, login, forgotPassword, resetPassword, refreshToken, registerPhone, registerRemaining, verifyOtp, } = require('../controllers/authController');
 const security = require('../middlewares/security');
 const router = express.Router();
 
 
-router.post('/register', register);
+router.post('/register-phone', registerPhone);
+router.post('/verify-phone', verifyOtp);
+router.post('/register', registerRemaining);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);

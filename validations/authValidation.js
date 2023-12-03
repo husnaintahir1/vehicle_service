@@ -21,18 +21,21 @@ const validateRegisterUser = function (obj) {
     //     'any.required': `{#label} is Required`,
     //     'any.empty': `{#label} is Required`,
     //   }),
+      name: Joi.string().required().label('Name').messages({
+        'any.required': `{#label} is Required`,
+      }),
       email: Joi.string().email().required().label('Email').messages({
         'any.required': `{#label} is Required`,
         'string.email': 'Enter a valid email',
       }),
-    //   phone: Joi.string()
-    //     .required()
-    //     .pattern(new RegExp(/^\+[0-9]{10}$/))
-    //     .label('Phone No')
-    //     .messages({
-    //       'any.required': `{#label} is Required`,
-    //       'string.pattern.base': `{#label} must start with +91 and be followed by 10 digits`
-    //     }),
+      phone: Joi.string()
+        .required()
+        .pattern(new RegExp(/^\+[0-9]{10,15}$/))
+        .label('Phone Number')
+        .messages({
+          'any.required': `{#label} is Required`,
+          'string.pattern.base': `{#label} must start with + and country code and followed by other digit digits`
+        }),
       password: Joi.string()
         // .regex(/^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=]).*$/)
         .required()
@@ -49,8 +52,48 @@ const validateRegisterUser = function (obj) {
     return schema.validate(obj, { allowUnknown: true });
 }
 
+const validateRegisterUserPhone = function (obj) {
+    const schema = Joi.object({
+      phone: Joi.string()
+        .required()
+        .pattern(new RegExp(/^\+[0-9]{10,15}$/))
+        .label('Phone Number')
+        .messages({
+          'any.required': `{#label} is Required`,
+          'string.pattern.base': `{#label} must start with + and country code and followed by other digit digits`
+        }),
+    });
+
+    return schema.validate(obj, { allowUnknown: true });
+}
+
+const validateOtp = function (obj) {
+    const schema = Joi.object({
+      otp: Joi.string()
+        .required()
+        .length(4)
+        .label('OTP')
+        .messages({
+          'any.required': `{#label} is Required`,
+          'string.length': `{#label} must be exactly 4 characters long`,
+        }),
+      phone: Joi.string()
+      .required()
+      .pattern(new RegExp(/^\+[0-9]{10,15}$/))
+      .label('Phone Number')
+      .messages({
+        'any.required': `{#label} is Required`,
+        'string.pattern.base': `{#label} must start with + and country code and followed by other digit digits`
+      }),
+    });
+
+    return schema.validate(obj, { allowUnknown: true });
+}
+
 
 module.exports = {
-    validateLogin, 
-    validateRegisterUser,
+  validateLogin, 
+  validateRegisterUser,
+  validateRegisterUserPhone,
+  validateOtp,
 }
