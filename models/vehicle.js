@@ -22,8 +22,21 @@ const vehicleSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  addedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  }
 }, { timestamps: true });
 
+
+vehicleSchema.virtual("user", {
+  ref: "User",
+  localField: 'addedBy',
+  foreignField: '_id',
+});
+
+vehicleSchema.set('toJSON', { virtuals: true });
+vehicleSchema.set('toObject', { virtuals: true });
 
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);

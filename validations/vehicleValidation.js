@@ -4,7 +4,7 @@ const validateAddVehicle = function (obj) {
     const schema = Joi.object({
       carModal: Joi.string().required().label('Car Modal').messages({
         'any.required': `{#label} is Required`,
-        'string.email': 'Enter a valid email',
+        'any.empty': `{#label} is Required`,
       }),
       carNumber: Joi.string().required().label('Car Number').messages({
         'any.required': `{#label} is Required`,
