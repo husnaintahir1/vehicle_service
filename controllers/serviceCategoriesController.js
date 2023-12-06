@@ -4,7 +4,8 @@ const ServiceCategory = require('../models/service_categories');
 
 const addServiceCategory = async (req, res) => {
   try {
-    const { title, image } = req.body;
+    const { title } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     const serviceCategory = new ServiceCategory({ title, image });
     await serviceCategory.save();
     return res.status(201).send({ success: true, message: 'Service category added', data: serviceCategory });
@@ -12,7 +13,6 @@ const addServiceCategory = async (req, res) => {
     return res.status(500).send({ success: false, error: error.message });
   }
 };
-
 const getAllServiceCategories = async (req, res) => {
   try {
     const serviceCategories = await ServiceCategory.find();
@@ -36,7 +36,8 @@ const getServiceCategoryById = async (req, res) => {
 
 const updateServiceCategory = async (req, res) => {
   try {
-    const { title, image } = req.body;
+    const { title } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     const serviceCategory = await ServiceCategory.findByIdAndUpdate(req.params.serviceCategoryId, { title, image }, { new: true });
     if (!serviceCategory) {
       return res.status(404).send({ success: false, error: 'Service category not found' });
@@ -46,6 +47,7 @@ const updateServiceCategory = async (req, res) => {
     return res.status(500).send({ success: false, error: error.message });
   }
 };
+
 
 const deleteServiceCategory = async (req, res) => {
   try {

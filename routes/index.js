@@ -14,7 +14,7 @@ function allRoutes(app){
     app.use("/api", logReqBody);
     app.use('/api/auth', security.rateLimiter, authRoutes);
     // define all public route before this middleware
-    app.use(isAuthenticated);
+    // app.use(isAuthenticated);
     app.use('/api/vehicle', vehicleRoutes);
     app.use('/api/brands', brandRoutes);
     app.use('/api/serviceCategory', serviceCategories);

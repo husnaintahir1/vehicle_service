@@ -7,16 +7,17 @@ const {
   updateGarageService,
   deleteGarageService,
 } = require('../controllers/garageServicesController');
+const upload = require('../middlewares/upload');
 
 const router = express.Router();
 
-router.post('/', addGarageService);
+router.post('/',upload.single('image'), addGarageService);
 
 router.get('/', getAllGarageServices);
 
 router.get('/:garageServiceId', getGarageServiceById);
 
-router.put('/:garageServiceId', updateGarageService);
+router.put('/:garageServiceId', upload.single('image'), updateGarageService);
 
 router.delete('/:garageServiceId', deleteGarageService);
 
