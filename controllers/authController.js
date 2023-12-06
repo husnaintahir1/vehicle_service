@@ -1,18 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const User = require('../models/user');
 const { validateRegisterUser, validateLogin, validateRegisterUserPhone, validateOtp } = require('../validations/authValidation');
 const { sendVerificationCode } = require('../utils/twilio');
+const { sendOtpByEmail, forgotPaswordLinkSend } = require('../utils/nodemailer');
 require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+
 
 const registerPhone = async (req, res) => {
   try {
@@ -109,24 +103,19 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
   
-    const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    const resetTokenExpiration = Date.now() + 3600000; // 1 hour from now
+    // const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // const resetTokenExpiration = Date.now() + 3600000; // 1 hour from now
   
-    await User.findOneAndUpdate(
-      { email },
-      { resetToken, resetTokenExpiration }
-    );
+    // await User.findOneAndUpdate(
+    //   { email },
+    //   { resetToken, resetTokenExpiration }
+    // );
+
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    user.otp = otp;
+    await user.save();
   
-    await transporter.sendMail({
-      to: email,
-      subject: 'Password Reset',
-      html: `<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-        <h2>Password Reset Request</h2>
-        <p>You requested a password reset. Please click the link below to set a new password.</p>
-        <a href="${process.env.SERVER_BASE_URL}/reset-password?token=${resetToken}" style="background-color: #0044cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
-        <p>If you did not request this, please ignore this email.</p>
-      </div>`
-    });
+    await forgotPaswordLinkSend(otp, user.email);
   
     res.send({ success: false, message: 'Password reset email sent' });
 };

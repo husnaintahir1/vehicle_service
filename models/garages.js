@@ -5,6 +5,9 @@ const garageSchema = new mongoose.Schema({
         type: String,
         required:true
     },
+    since: {
+        type: String,
+    },
     timing: {
         type: String,
         required:true
@@ -27,6 +30,14 @@ const garageSchema = new mongoose.Schema({
     phoneNumber:{
         type:String,
         required:true
+    },
+    isPickAndDropAvailable: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    garageImage: {
+        type: String,
     }
 });
 
