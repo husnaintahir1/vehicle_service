@@ -2,7 +2,8 @@ const Brands = require('../models/brands');
 
 const addBrand = async (req, res) => {
   try {
-    const { title, image } = req.body;
+    const { title } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     const brand = new Brands({ title, image });
     await brand.save();
     return res.status(201).send({ success: true, message: 'Brand added', data: brand });
@@ -34,7 +35,8 @@ const getBrandById = async (req, res) => {
 
 const updateBrand = async (req, res) => {
   try {
-    const { title, image } = req.body;
+    const { title } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     const brand = await Brands.findByIdAndUpdate(req.params.brandId, { title, image }, { new: true });
     if (!brand) {
       return res.status(404).send({ success: false, error: 'Brand not found' });

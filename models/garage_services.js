@@ -36,6 +36,9 @@ const garageServiceSchema = new mongoose.Schema({
     serviceCategory:{
         type:mongoose.Schema.Types.ObjectId,
         required:true
+    },
+    image:{
+        type:String
     }
 },{timestamps:true})
 

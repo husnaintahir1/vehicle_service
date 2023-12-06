@@ -15,6 +15,8 @@ const addGarageService = async (req, res) => {
       serviceCategory,
     } = req.body;
 
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
+
     const garageService = new GarageService({
       title,
       timing,
@@ -24,6 +26,7 @@ const addGarageService = async (req, res) => {
       garage,
       serviceSubCategory,
       serviceCategory,
+      image,
     });
 
     await garageService.save();
@@ -33,6 +36,7 @@ const addGarageService = async (req, res) => {
     return res.status(500).send({ success: false, error: error.message });
   }
 };
+
 
 const getAllGarageServices = async (req, res) => {
   try {
@@ -68,6 +72,8 @@ const updateGarageService = async (req, res) => {
       serviceCategory,
     } = req.body;
 
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
+
     const garageService = await GarageService.findByIdAndUpdate(
       req.params.garageServiceId,
       {
@@ -79,6 +85,7 @@ const updateGarageService = async (req, res) => {
         garage,
         serviceSubCategory,
         serviceCategory,
+        image,
       },
       { new: true }
     );
@@ -92,7 +99,6 @@ const updateGarageService = async (req, res) => {
     return res.status(500).send({ success: false, error: error.message });
   }
 };
-
 const deleteGarageService = async (req, res) => {
   try {
     const garageService = await GarageService.findByIdAndDelete(req.params.garageServiceId);
