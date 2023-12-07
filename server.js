@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(security.corsOptions));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-allRoutes(app)
+allRoutes(express, app);
 
 
 connectDB().then(() => {

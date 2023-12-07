@@ -9,12 +9,14 @@ const serviceCategories = require('./serviceCategoriesRoutes')
 const subServices= require('./subServicesRoutes')
 const garage = require('./garageRoutes')
 const garageService = require('./garageServicesRoutes')
+const path = require("path");
 
-function allRoutes(app){
+function allRoutes(express, app){
     app.use("/api", logReqBody);
     app.use('/api/auth', security.rateLimiter, authRoutes);
     // define all public route before this middleware
     // app.use(isAuthenticated);
+    app.use('/images', express.static(path.join(__dirname, 'images')));
     app.use('/api/vehicle', vehicleRoutes);
     app.use('/api/brands', brandRoutes);
     app.use('/api/serviceCategory', serviceCategories);
@@ -27,5 +29,6 @@ function allRoutes(app){
     app.use(errorHandler);
 }
 
+// source={{ uri: 'http://your-server-address/images/your-image-name.jpg' }}
 
 module.exports = allRoutes;

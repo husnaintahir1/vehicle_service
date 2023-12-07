@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
   otp: {
     type: String,
   },
+  imageUrl: {
+    type: String,
+  },
   resetToken: String,
   resetTokenExpiration: Date
 }, { timestamps: true });

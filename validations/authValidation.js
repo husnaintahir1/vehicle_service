@@ -28,14 +28,14 @@ const validateRegisterUser = function (obj) {
         'any.required': `{#label} is Required`,
         'string.email': 'Enter a valid email',
       }),
-      phone: Joi.string()
-        .required()
-        .pattern(new RegExp(/^\+[0-9]{10,15}$/))
-        .label('Phone Number')
-        .messages({
-          'any.required': `{#label} is Required`,
-          'string.pattern.base': `{#label} must start with + and country code and followed by other digit digits`
-        }),
+      // phone: Joi.string()
+      //   .required()
+      //   .pattern(new RegExp(/^\+[0-9]{10,15}$/))
+      //   .label('Phone Number')
+      //   .messages({
+      //     'any.required': `{#label} is Required`,
+      //     'string.pattern.base': `{#label} must start with + and country code and followed by other digit digits`
+      //   }),
       password: Joi.string()
         // .regex(/^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=]).*$/)
         .required()

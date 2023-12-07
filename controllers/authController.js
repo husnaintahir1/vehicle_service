@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { validateRegisterUser, validateLogin, validateRegisterUserPhone, validateOtp } = require('../validations/authValidation');
 const { sendVerificationCode } = require('../utils/twilio');
-const { sendOtpByEmail, forgotPaswordLinkSend } = require('../utils/nodemailer');
+const { forgotPaswordLinkSend } = require('../utils/nodemailer');
 require('dotenv').config();
 
 
@@ -67,16 +67,19 @@ const registerRemaining = async (req, res) => {
       return res.status(400).send({ success: false, message: "Email already registered" });
     }
 
-    const user = await User.findOne({ phone });
-    if(!user){
-      return res.status(400).send({ success: false, message: "Phone number not registered" });
-    }
+    // const user = await User.findOne({ phone });
+    // if(!user){
+    //   return res.status(400).send({ success: false, message: "Phone number not registered" });
+    // }
 
-    user.name = name;
-    user.email = email;
-    user.password = password;
+    // user.name = name;
+    // user.email = email;
+    // user.password = password;
+
+    // UnComment abpve code and rem below when phone register
+    const user = new User(req.body);
     await user.save();
-    res.status(200).send({ success: true, data: { user, message: 'User successfully updated', }});
+    res.status(200).send({ success: true, data: { user, message: 'User successfully Registered', }});
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message, });
   }
@@ -121,32 +124,30 @@ const forgotPassword = async (req, res) => {
 };
   
 const resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body;
+    const { otp, email, password } = req.body;
   
     try {
       // Verify the token first
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = decoded.userId;
+      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // const userId = decoded.userId;
   
       // Find the user by ID and ensure the token hasn't expired
       const user = await User.findOne({
-        _id: userId,
-        resetToken: token,
-        resetTokenExpiration: { $gt: Date.now() }
+        email,
+        otp,
       });
-  
+      
       if (!user) {
-        return res.status(400).json({ message: 'Token is invalid or has expired' });
+        return res.status(400).json({ message: 'Invalid otp or has expired' });
       }
   
-      user.password = newPassword;
-      user.resetToken = null;
-      user.resetTokenExpiration = null;
+      user.password = password;
+      user.otp = null;
       await user.save();
   
       res.send({ success: true, message: 'Password has been reset successfully' });
     } catch (err) {
-      res.status(500).send({ success:false, message: 'Error resetting password' });
+      res.status(500).send({ success: false, message: 'Error while reseting password' });
     }
 };
   

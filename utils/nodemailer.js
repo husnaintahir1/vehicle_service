@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-export const sendOtpByEmail = async (otp, email) => {
+const sendOtpByEmail = async (otp, email) => {
     await transporter.sendMail({
         to: email,
         subject: 'Verification Code',
@@ -20,7 +20,7 @@ export const sendOtpByEmail = async (otp, email) => {
     });
 }
 
-export const forgotPaswordLinkSend = async (otp, email) => {
+const forgotPaswordLinkSend = async (otp, email) => {
     await transporter.sendMail({
         to: email,
         subject: 'Password Reset',
@@ -33,4 +33,7 @@ export const forgotPaswordLinkSend = async (otp, email) => {
 }
 
 
+module.exports = {
+    forgotPaswordLinkSend, sendOtpByEmail,
+}
 // <a href="${process.env.SERVER_BASE_URL}/reset-password?token=${resetToken}" style="background-color: #0044cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
